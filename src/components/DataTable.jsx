@@ -18,22 +18,22 @@ export default function DataTable({ columns, rows, pageSize = 10 }) {
   const shownColumns = columns
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
-        <div className="text-sm font-semibold text-slate-800">रिकॉर्ड</div>
-        <div className="flex items-center gap-2 text-xs text-slate-600">
+    <div className="w-full max-w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm sm:rounded-xl">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-3 py-2 sm:px-4 sm:py-3">
+        <div className="text-xs font-semibold text-slate-800 sm:text-sm">रिकॉर्ड</div>
+        <div className="flex items-center gap-1 text-xs text-slate-600 sm:gap-2">
           <span>
             पेज {currentPage} / {totalPages}
           </span>
           <button
-            className="rounded-lg border border-slate-200 px-2 py-1 text-slate-700 disabled:opacity-50"
+            className="rounded border border-slate-200 px-2 py-0.5 text-slate-700 disabled:opacity-50 sm:rounded-lg sm:py-1"
             onClick={() => setPage((p) => clamp(p - 1, 1, totalPages))}
             disabled={currentPage <= 1}
           >
             पिछला
           </button>
           <button
-            className="rounded-lg border border-slate-200 px-2 py-1 text-slate-700 disabled:opacity-50"
+            className="rounded border border-slate-200 px-2 py-0.5 text-slate-700 disabled:opacity-50 sm:rounded-lg sm:py-1"
             onClick={() => setPage((p) => clamp(p + 1, 1, totalPages))}
             disabled={currentPage >= totalPages}
           >
@@ -42,14 +42,14 @@ export default function DataTable({ columns, rows, pageSize = 10 }) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="w-full overflow-x-auto">
         <table className="min-w-full border-collapse text-left text-xs">
           <thead className="bg-slate-50">
             <tr>
               {shownColumns.map((c) => (
                 <th
                   key={c}
-                  className="whitespace-nowrap border-b border-slate-200 px-3 py-2 font-semibold text-slate-700"
+                  className="whitespace-nowrap border-b border-slate-200 px-2 py-1.5 text-xs font-semibold text-slate-700 sm:px-3 sm:py-2"
                 >
                   {c}
                 </th>
@@ -60,7 +60,7 @@ export default function DataTable({ columns, rows, pageSize = 10 }) {
             {pageRows.map((row, idx) => (
               <tr key={idx} className={idx % 2 ? 'bg-white' : 'bg-slate-50/40'}>
                 {shownColumns.map((c) => (
-                  <td key={c} className="whitespace-nowrap border-b border-slate-100 px-3 py-2 text-slate-700">
+                  <td key={c} className="whitespace-nowrap border-b border-slate-100 px-2 py-1.5 text-xs text-slate-700 sm:px-3 sm:py-2">
                     {String(row?.[c] ?? '')}
                   </td>
                 ))}
@@ -69,7 +69,7 @@ export default function DataTable({ columns, rows, pageSize = 10 }) {
             {pageRows.length === 0 ? (
               <tr>
                 <td
-                  className="px-3 py-6 text-center text-slate-500"
+                  className="px-2 py-4 text-center text-xs text-slate-500 sm:px-3 sm:py-6 sm:text-sm"
                   colSpan={shownColumns.length || 1}
                 >
                   डेटा उपलब्ध नहीं

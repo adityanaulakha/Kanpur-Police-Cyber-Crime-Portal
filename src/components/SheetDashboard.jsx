@@ -15,10 +15,10 @@ function findMatchingColumns(columns, regex) {
 
 function Select({ label, value, onChange, options, disabled }) {
   return (
-    <label className="flex items-center gap-2">
-      <span className="text-xs font-medium text-white/90">{label}</span>
+    <label className="flex w-full items-center gap-1 sm:w-auto sm:gap-2">
+      <span className="whitespace-nowrap text-xs font-medium text-white/90">{label}</span>
       <select
-        className="h-9 rounded-xl border border-white/15 bg-white/10 px-3 text-xs text-white outline-none backdrop-blur disabled:opacity-50"
+        className="h-8 flex-1 rounded-lg border border-white/15 bg-white/10 px-2 text-xs text-white outline-none backdrop-blur disabled:opacity-50 sm:h-9 sm:flex-initial sm:rounded-xl sm:px-3"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
@@ -35,13 +35,13 @@ function Select({ label, value, onChange, options, disabled }) {
 
 function SectionHeader({ title, subtitle, children }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-linear-to-r from-slate-900 via-slate-900 to-slate-800 px-4 py-4 shadow-sm">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <div className="text-base font-bold text-white md:text-lg">{title}</div>
-          {subtitle ? <div className="mt-0.5 text-xs text-white/70">{subtitle}</div> : null}
+    <div className="w-full max-w-full overflow-hidden rounded-xl border border-white/10 bg-linear-to-r from-slate-900 via-slate-900 to-slate-800 px-3 py-3 shadow-sm sm:rounded-2xl sm:px-4 sm:py-4">
+      <div className="flex flex-col gap-2 sm:gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <div className="truncate text-sm font-bold text-white sm:text-base md:text-lg">{title}</div>
+          {subtitle ? <div className="mt-0.5 truncate text-xs text-white/70">{subtitle}</div> : null}
         </div>
-        <div className="flex flex-wrap items-center justify-start gap-3 md:justify-end">
+        <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
           {children}
         </div>
       </div>
@@ -54,6 +54,7 @@ export default function SheetDashboard({
   sheetName,
   columns,
   rows,
+  formLink,
   globalDateRange = { preset: 'all', start: null, end: null },
   onGlobalDateRangeChange,
   globalSearch = '',
@@ -206,18 +207,28 @@ export default function SheetDashboard({
         subtitle={`${fileName} • ${filteredRows.length} पंक्तियाँ (फ़िल्टर के बाद)`}
       >
         <div className="flex flex-wrap items-center gap-2">
+          {formLink && (
+            <a
+              href={formLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-8 items-center justify-center rounded-lg bg-gradient-to-r from-green-600 to-emerald-500 px-3 text-xs font-semibold text-white shadow-sm hover:from-green-700 hover:to-emerald-600 sm:h-9 sm:rounded-xl sm:px-4"
+            >
+              Form Link
+            </a>
+          )}
           <DateRangePicker
             value={globalDateRange}
             onChange={(next) => onGlobalDateRangeChange?.(next)}
           />
 
-          <label className="flex items-center gap-2">
+          <label className="flex w-full items-center gap-2 sm:w-auto">
             <span className="text-xs font-medium text-white/90">खोज</span>
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="फ़िल्टर करने के लिए लिखें"
-              className="h-9 w-48 rounded-xl border border-white/15 bg-white/10 px-3 text-xs text-white outline-none placeholder:text-white/50 backdrop-blur"
+              className="h-8 flex-1 rounded-lg border border-white/15 bg-white/10 px-2 text-xs text-white outline-none placeholder:text-white/50 backdrop-blur sm:h-9 sm:w-40 sm:rounded-xl sm:px-3 md:w-48"
             />
           </label>
 
@@ -282,7 +293,7 @@ export default function SheetDashboard({
         </div>
       </SectionHeader>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4">
         <StatCard title="कुल रिकॉर्ड" value={formatNumber(filteredRows.length)} subtitle="फ़िल्टर के बाद" />
         <StatCard
           title="समूह"
@@ -321,9 +332,9 @@ export default function SheetDashboard({
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+      <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:gap-3 xl:grid-cols-2">
         <ChartCard title="बार सारांश" right={labelCol && valueCol ? `${labelCol} → ${valueCol}` : 'कॉलम चुनें'}>
-          <div className="h-72">
+          <div className="h-56 sm:h-72">
             {barAgg.labels.length ? (
               <Bar data={barData} options={chartOptionsBar} />
             ) : (
@@ -335,7 +346,7 @@ export default function SheetDashboard({
         </ChartCard>
 
         <ChartCard title="पाई वितरण" right={labelCol && valueCol ? `${labelCol} → ${valueCol}` : 'कॉलम चुनें'}>
-          <div className="h-72">
+          <div className="h-56 sm:h-72">
             {pieAgg.labels.length ? (
               <Pie data={pieData} options={chartOptionsPie} />
             ) : (
@@ -347,7 +358,7 @@ export default function SheetDashboard({
         </ChartCard>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-3 sm:mt-4">
         <DataTable columns={columnsForTable} rows={filteredRows} pageSize={10} />
       </div>
     </section>
