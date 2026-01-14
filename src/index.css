@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	background: #f1f5f9;
+}
+
+/* react-day-picker (Date range popup) tweaks */
+.rdp {
+	--rdp-accent-color: #2563eb;
+	--rdp-background-color: #dbeafe;
+	margin: 0;
+}
+
+.rdp-caption_label {
+	font-weight: 600;
+}
+
+.rdp-nav_button {
+	border-radius: 10px;
+}
