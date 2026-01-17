@@ -4,9 +4,13 @@ import TopBar from './TopBar.jsx'
 import { ensureChartsRegistered } from '../lib/chartSetup.js'
 import { fetchSheetAsTable } from '../lib/googleSheets.js'
 import { DASHBOARD_SECTIONS } from '../data/sections.js'
+import { SAMPLE_DATA } from '../data/sampleData.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
 ensureChartsRegistered()
+
+// Toggle this to use sample data instead of Google Sheets
+const USE_SAMPLE_DATA = true
 
 function makeId(prefix) {
   if (globalThis.crypto?.randomUUID) return `${prefix}-${crypto.randomUUID()}`
@@ -35,34 +39,54 @@ export default function Dashboard() {
     setBusy(true)
     setError('')
     try {
-      const results = await Promise.allSettled(
-        DASHBOARD_SECTIONS.map(async (section) => {
-          const { columns, rows } = await fetchSheetAsTable(section.source)
+      if (USE_SAMPLE_DATA) {
+        // Use sample data
+        const next = DASHBOARD_SECTIONS.map((section) => {
+          const sampleData = SAMPLE_DATA[section.key] || { columns: [], rows: [] }
           return {
             id: makeId('section'),
             key: section.key,
-            fileName: 'Google Sheet',
+            fileName: 'Sample Data',
             sheetName: section.title,
-            columns,
-            rows,
+            columns: sampleData.columns,
+            rows: sampleData.rows,
             formLink: section.formLink,
           }
-        }),
-      )
+        })
+        setItems(next)
+      } else {
+        // Fetch from Google Sheets
+        const results = await Promise.allSettled(
+          DASHBOARD_SECTIONS.map(async (section) => {
+            const { columns, rows } = await fetchSheetAsTable(section.source)
+            return {
+              id: makeId('section'),
+              key: section.key,
+              fileName: 'Google Sheet',
+              sheetName: section.title,
+              columns,
+              rows,
+              formLink: section.formLink,
+            }
+          }),
+        )
 
-      const next = []
-      const errors = []
+        const next = []
+        const errors = []
 
-      for (const r of results) {
-        if (r.status === 'rejected') {
-          errors.push(String(r.reason?.message || r.reason || 'Failed to load a section'))
-          continue
+        for (const r of results) {
+          if (r.status === 'rejected') {
+            errors.push(String(r.reason?.message || r.reason || 'Failed to load a section'))
+            continue
+          }
+          next.push(r.value)
         }
-        next.push(r.value)
-      }
 
-      setItems(next)
-      if (errors.length) setError(errors.slice(0, 3).join(' • '))
+        setItems(next)
+        if (errors.length) setError(errors.slice(0, 3).join(' • '))
+      }
+    } catch (err) {
+      setError(String(err?.message || err || 'Failed to load data'))
     } finally {
       setBusy(false)
     }

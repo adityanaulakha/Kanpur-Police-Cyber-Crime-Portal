@@ -198,7 +198,7 @@ export default function SheetDashboard({
     },
   }
 
-  const columnsForTable = useMemo(() => columns.slice(0, 12), [columns])
+  const columnsForTable = useMemo(() => columns.slice(0, 6), [columns])
 
   return (
     <section className="scroll-mt-24">
@@ -334,8 +334,8 @@ export default function SheetDashboard({
 
       <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:gap-3 xl:grid-cols-2">
         <ChartCard title="बार सारांश" right={labelCol && valueCol ? `${labelCol} → ${valueCol}` : 'कॉलम चुनें'}>
-          <div className="h-56 sm:h-72">
-            {barAgg.labels.length ? (
+          <div className="relative h-56 w-full sm:h-72">
+            {barAgg.labels.length > 0 ? (
               <Bar data={barData} options={chartOptionsBar} />
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-slate-500">
@@ -346,8 +346,8 @@ export default function SheetDashboard({
         </ChartCard>
 
         <ChartCard title="पाई वितरण" right={labelCol && valueCol ? `${labelCol} → ${valueCol}` : 'कॉलम चुनें'}>
-          <div className="h-56 sm:h-72">
-            {pieAgg.labels.length ? (
+          <div className="relative h-56 w-full sm:h-72">
+            {pieAgg.labels.length > 0 ? (
               <Pie data={pieData} options={chartOptionsPie} />
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-slate-500">
